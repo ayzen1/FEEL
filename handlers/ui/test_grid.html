@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>My First Grid</title>
+ 
+<link rel="stylesheet" type="text/css" media="screen" href="static/css/custom-theme/jquery-ui-1.8.17.custom.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="static/css/ui.jqgrid.css" />
+ 
+<script src="static/js/jquery-1.5.2.min.js" type="text/javascript"></script>
+<script src="static/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+<script src="static/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $("#events").jqGrid({
+    url:'/populate',
+    datatype: 'json',
+    mtype: 'GET',
+    colNames:['Type','Time','End Time', 'Memo', 'Event_ID',],
+    colModel :[ 
+      {name:'event_type', index:'event_type', resizable:'false', width:75}, 
+      {name:'start_time', index:'event_time', width:140, align:'right'}, 
+      {name:'event_memo', index:'event_memo', width:180, align:'right', sortable:'false'},
+      {name:'event_id', hidden:'true', sortable:'false'},
+    ],
+    jsonReader: {
+    	root: "events",    	
+    },
+    onSelectRow: function(id){
+    	var event_type = $("#events").getRowData(id).event_type;
+    	var event_id = $("#events").getRowData(id).event_id;
+    },
+    pager: '#pager',
+    rowNum:10,
+    rowList:[10,20,30],
+    sortname: 'event_time',
+    sortorder: 'desc',
+    viewrecords: true,
+    gridview: true,
+    caption: 'My first grid'
+  }); 
+   
+   $(".ui-jqgrid-bdiv").click( function(){
+   	alert($(this).val());
+});
+	
+
+});
+</script>
+
+</head>
+
+<body>
+<table id="events"><tr><td/></tr></table> 
+<div id="pager"></div> 
+</body>
+</html>
