@@ -2,7 +2,7 @@ import feel_base as FB
 import datetime
 from edatoolkit import qLogFile
 
-phone_call_params = {'phoneNumber':'phone_number','startTime':'start_time','endTime':'end_time'}
+phone_call_params = {'contactName':'contact_name', 'phoneNumber':'phone_number','startTime':'start_time','endTime':'end_time'}
 calendar_params = {'startTime':'start_time','endTime':'end_time','allDay':'all_day','location':'location',
                        'title':'title','attendees':'attendees','reminder':'reminder','details':'details'}
 email_params = {'from':'sender','subject':'subject','text':'text','sentAt':'sent_at','recipients_to':'recipients_to',
