@@ -1,16 +1,7 @@
 from feel_base import BaseHandler
 
 class RegHandler(BaseHandler):
-        def get(self):
-            if self.is_user_logged_in():
-                self.redirect("/")
-                return
-            self.write('<html><body><form action="/reg" method="post">'
-                   '<p>Phone Number:<p/><input type="text" name="phone_number"/>'
-                   '<p>Password<p/><input type="password" name="password"/>'
-                    '<p>Password Confirm</p><input type="password" name="password"/>'
-                    '<input type="submit" name="submit"/>'
-                   '</form></body></html>')
+
         def post(self):
             try:
                 phone_number = self.request.arguments['phone_number'][0]
