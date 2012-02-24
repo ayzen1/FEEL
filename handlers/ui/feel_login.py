@@ -1,5 +1,4 @@
 from feel_base import BaseHandler
-import base64, uuid
 
 class LoginHandler(BaseHandler):
  
@@ -15,15 +14,9 @@ class LoginHandler(BaseHandler):
         
         password = self.request.arguments['password'][0]
         
-        if self.is_correct_login(password, phone_number= phone_number, email=email,):
-            key = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
-            if(self.save_login(key, email=email, phone_number=phone_number)):
-                self.write("successful login")
-                self.set_secure_cookie('key', key)
-                self.redirect("/")
-            else:
-                self.write("could not login=(")
-                self.redirect('/login')
+        if(self.do_login(password, email=email, phone_number=phone_number)):
+            self.write("successful login")
+            self.redirect("/")
         else:
-            print "incorrect login"
+            self.write("incorrect login")
             self.redirect('/login')

@@ -7,6 +7,7 @@ calendar_params = {'startTime':'start_time','endTime':'end_time','allDay':'all_d
                        'title':'title','attendees':'attendees','reminder':'reminder','details':'details'}
 email_params = {'from':'sender','subject':'subject','text':'text','sentAt':'sent_at','recipients_to':'recipients_to',
                     'recipients_cc':'recipients_cc','viewStart':'view_start','viewEnd':'view_end'}
+time_params = ['sentAt','viewStart','viewEnd','reminder','startTime','endTime']
 type_to_params = {1:email_params, 3:phone_call_params, 2:calendar_params}
 type_to_tables = {1:'feel_email', 3:'feel_phone_call', 2:'feel_calendar'}
 
@@ -20,15 +21,18 @@ def handle_event(user_id, request):
     args = get_event_args(type_to_params[int(event_type)], request)
     save_event(user_id, args, event_type)
         
+# returns dictionary of parameters, where keys are the strings used in client side
 def get_event_args(params, request):
     args = dict()
     for param in params:
         try:
-            args[param] = request.arguments[param][0]
-            if args[param] == '':   # in case http post includes param name but there is no info. subject to change
-                args[param] = None
+            arg = request.arguments[param][0]
+            if arg == '':   # in case http post includes param name but there is no info. subject to change
+                arg = None
         except KeyError:
-            args[param] = None
+            pass
+        if arg!=None:
+            args[param] = arg
     return args
 
 # original dictionary of arguments in httprequest are passed
@@ -38,20 +42,18 @@ def save_event(user_id, args, event_type):
         
     fields_string = " (user_id,"
     values_string = '('+str(user_id) + ','
-    for param in params_map.keys():
-        if args[param] is not None:
-            if (param == 'startTime' or param == 'endTime' or
-                param == 'reminder' or param == 'viewStart' or param == 'viewEnd'):
-                    time_object = datetime.datetime.strptime(args[param], incoming_time_format)
-                    args[param] = time_object.strftime(server_time_format) 
-            values_string = values_string + "\'"+args[param]+"\',"
-            fields_string = fields_string + params_map[param]+","
+    for param in args.keys():
+        if (param in time_params):
+                time_object = datetime.datetime.strptime(args[param], incoming_time_format)
+                args[param] = time_object.strftime(server_time_format) 
+        values_string = values_string + "\'"+args[param]+"\',"
+        fields_string = fields_string + params_map[param]+","
           
     fields_string = fields_string[0:len(fields_string)-1] + ") "
     values_string = values_string[0:len(values_string)-1] + ")"
     
     
-    query = "INSERT INTO " + table + fields_string + "VALUES " + values_string
+    query = "INSERT IGNORE INTO " + table + fields_string + "VALUES " + values_string
     if (FB.safe_execute(query)):
         save_event_summary(user_id, event_type, table, args)
     else:
@@ -79,7 +81,7 @@ def save_event_summary(user_id, event_type, table, args):
             event_time = args['startTime']
             memo = args['title']          
         
-        summary_query = """INSERT INTO feel_event_summary (event_id, user_id, 
+        summary_query = """INSERT IGNORE INTO feel_event_summary (event_id, user_id, 
                 event_type, event_time, memo) VALUES 
                 ({0},{1},{2},'{3}','{4}')""".format(event_id, user_id, event_type, event_time, memo)
         return FB.safe_execute(summary_query)
@@ -114,7 +116,7 @@ def save_eda_file_in_slices(user_id, file_name):
 def save_eda_data(user_id, start_time_string, end_time_string, sample_rate,
                    time_zone, eda, temperature, acc_x, acc_y, acc_z):
     
-    query = """INSERT INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `time_zone`, `eda`,
+    query = """INSERT IGNORE INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `time_zone`, `eda`,
          `temperature`, `acc_x`, `acc_y`, `acc_z`) VALUES ('{0}','{1}','{2}','{3}',
          '{4}','{5}','{6}','{7}','{8}','{9}')""".format(user_id, start_time_string,
                                                    end_time_string, sample_rate, time_zone, eda,
