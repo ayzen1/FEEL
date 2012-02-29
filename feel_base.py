@@ -47,7 +47,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user_id(self):
         if self.is_user_logged_in():
             key = self.get_current_user_key()
-            query = "SELECT * FROM feel_login WHERE key='{1}' LIMIT 1".format(key)
+            query = "SELECT * FROM feel_login WHERE `key`='{0}' LIMIT 1".format(key)
             if safe_execute(query):
                 result = cursor.fetchone()
                 if result!=None:
@@ -84,6 +84,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie('pass', password)
         
         user_id = self.get_user_id(password, email, phone_number)
+        print "executing deletion.." #in case user just closed web browser To be changed
+        safe_execute("DELETE FROM feel_login WHERE `user_id`='{0}'".format(user_id))
         if(user_id):
             query = "INSERT INTO feel_login (`user_id`, `key`) VALUES ('{0}','{1}')".format(user_id, key)
             return safe_execute(query)
@@ -100,7 +102,7 @@ class BaseHandler(tornado.web.RequestHandler):
             assert (phone_number!=None or email!=None)
             enc_pass = hashlib.md5(password).hexdigest()
             field_name, field_value = get_field_info(phone_number, email)
-            query = """INSERT INTO feel_user (`{0}`, `password`) VALUES 
+            query = """INSERT IGNORE INTO feel_user (`{0}`, `password`) VALUES 
             ('{1}', '{2}')""".format(field_name, field_value, enc_pass)
             return safe_execute(query)
         except AssertionError:

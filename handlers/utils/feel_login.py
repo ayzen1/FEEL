@@ -3,7 +3,6 @@ import hashlib
 class LoginHandler(BaseHandler):
  
     def get(self):
-        print hashlib.md5('mac').hexdigest()
         if self.do_login('mac', email='makif@mit.edu'):
             print "test logged in"
         else:

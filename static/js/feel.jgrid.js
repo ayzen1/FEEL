@@ -1,4 +1,5 @@
-$(document).ready(function(){ 
+$(document).ready(
+	function(){ 
 	  $("#events-grid").jqGrid({
 		url:'/populate',
 		datatype: 'json',

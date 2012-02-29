@@ -4,7 +4,7 @@ function newChart()
 {
 	chart = new Highcharts.StockChart({
         chart: {
-           renderTo: 'container',
+           renderTo: 'eda-graph-div',
            defaultSeriesType: 'spline',
            events: {
                //load: requestData
@@ -34,4 +34,4 @@ function newChart()
             data: test
         }], 
      });	
-}
+};
