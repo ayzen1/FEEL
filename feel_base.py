@@ -1,11 +1,11 @@
 from feel_database import Database as db
-import md5, base64, uuid
+import md5, base64, uuid, hashlib
 import tornado.web
 cursor = db.cursor
 
 def safe_execute(query):
     try:
-        print "attempting to execute query; {0}..".format(query)
+        print "executing query; {0}.".format(query)
         cursor.execute(query)
         return True
     except Exception as ex:
@@ -64,14 +64,17 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return False
        
-    def is_correct_login(self, password, email=None, phone_number=None):
+    def get_user_id(self, password, email=None, phone_number=None):
         field_name, field_value = get_field_info(phone_number, email)
-        query = "SELECT `password` FROM feel_user WHERE {0}='{1}'".format(field_name, field_value)
+        query = "SELECT `id`, `password` FROM feel_user WHERE {0}='{1}'".format(field_name, field_value)
         if(safe_execute(query)):
             result = cursor.fetchone()
             if(result != None):
-                if (result[0] == md5.md5(password)):
-                    return True
+                if (result[1] == hashlib.md5('mac').hexdigest()):
+                    return result[0]
+                else:
+                    return False
+                    print "wrong password"
         return False
         
                    
@@ -80,9 +83,9 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie('key', key)
         self.set_secure_cookie('pass', password)
         
-        if(self.is_correct_login(password, email, phone_number)):
-            field_name, field_value = get_field_info(phone_number, email)
-            query = "INSERT INTO feel_login (`{0}`, `key`) VALUES ('{1}','{2}')".format(field_name, field_value, key)
+        user_id = self.get_user_id(password, email, phone_number)
+        if(user_id):
+            query = "INSERT INTO feel_login (`user_id`, `key`) VALUES ('{0}','{1}')".format(user_id, key)
             return safe_execute(query)
         else:
             return False
@@ -95,7 +98,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def register(self, password, phone_number=None, email=None):
         try:
             assert (phone_number!=None or email!=None)
-            enc_pass = md5.md5(password)
+            enc_pass = hashlib.md5(password).hexdigest()
             field_name, field_value = get_field_info(phone_number, email)
             query = """INSERT INTO feel_user (`{0}`, `password`) VALUES 
             ('{1}', '{2}')""".format(field_name, field_value, enc_pass)

@@ -1,0 +1,28 @@
+/* Z-index of #mask must lower than #boxes .window */
+#mask {
+  position:absolute;
+  height: %100;
+  width:%100;
+  z-index:11;
+  background-color:#FFF;
+  display:none;
+}
+#nav-div{
+	margin:0 auto;
+	display:none;
+}
+  
+#nav-div .feel-form-div {
+	margin:0 auto;
+  z-index:15;
+  padding:20px;
+}
+ 
+ 
+/* Customize your modal window here, you can add background image too */
+#signin-div #signup-div{
+	margin:0 auto;	
+	width:auto; 
+	height:auto;
+  
+}

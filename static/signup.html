@@ -1,0 +1,36 @@
+<head>
+	<script language="javascript" type="text/javascript" src="/static/js/niceforms.js"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="/static/css/niceforms-default.css"/>
+	<style type="text/css">
+		html, body {height:300px; width:200px}
+	</style>
+</head>
+
+<body>
+<div>
+<form action="/reg" method="post" class="niceform">
+	<fieldset>
+		<legend>Sign Up</legend>
+	   <dl>
+	    	<dt><label for="email">Email Address:</label></dt>
+	        <dd><input type="text" name="email" id="email" size="32" maxlength="128" /></dd>
+	    </dl>
+	    <dl>
+	    	<dt><label for="password">Password:</label></dt>
+	        <dd><input type="password" name="password" id="password" size="32" maxlength="32" /></dd>
+	    </dl>
+	    <dl>
+	    	<dt><label for="password">Retype Password:</label></dt>
+	        <dd><input type="password" name="password" id="password" size="32" maxlength="32" /></dd>
+	    </dl>
+    </fieldset>
+    <fieldset class="action">
+       <input type="submit" name="Login" value="Login"/>
+    </fieldset>
+    
+	<fieldset class="action">
+		<input type="submit" name="submit"/>
+   	</fieldset>
+</form>
+</div>
+</body

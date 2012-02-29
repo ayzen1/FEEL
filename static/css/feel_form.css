@@ -1,0 +1,37 @@
+.feel-form-div{
+	width:100%;
+	height:100%;
+	}
+.feel-form{
+	margin: 0 auto;
+	margin-top:10px;
+	position:relative;
+	clear:left;
+	list-style:none;
+	border:solid 2px #b7ddf2;
+	background:#ebf4fb;
+	width:400px;
+	height:300px;
+	border-radius: 15px;
+	-webkit-border-radius: 15px;
+    -moz-border-radius: 15px; 
+}
+.feel-form-title{
+}
+.feel-form-input input{
+	margin: 0 auto;
+	position: relative;
+	margin-left:140px;
+	padding:2px;
+	color: black;
+	font-family: arial, verdana, ms sans serif;
+	font-weight: bold;
+	font-size: 12pt
+}
+.feel-form-input label{
+	margin-left:5px;
+	padding:2px;
+}
+.feel-form-button{
+	margin-left:160px;
+}

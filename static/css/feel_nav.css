@@ -1,0 +1,54 @@
+/* Styles for the entire LavaLamp menu */
+html, body {
+	margin:0px;	/* make sure no space b/w nav block and window*/
+	padding:0px;
+}
+div#nav-block{
+	padding:0px; margin:0px;
+}
+ul#menu {
+	list-style: none;
+    width: 100%;
+    background: url("/static/img/bg1.gif");
+    background-repeat:repeat-x repeat-y;
+    padding: 3px; margin:0px;
+    overflow: hidden;
+}
+
+/* Force the list to flow horizontally */
+ul#menu li {
+	position: relative; /*allows us to set the z-index */
+	float:right;
+	z-index:5;
+	font-size:16px;
+    font-weight:bold;	
+}
+
+/* Represents the background of the highlighted menu-item. */
+ul#menu li.backLava {
+	position: absolute;
+	z-index:3;
+    background: url("/static/img/lava1.gif") top left;
+    background-repeat:repeat-x;    
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px; 
+    border-radius: 5px;
+    
+}
+   
+/* Styles for each menu-item. */
+ul#menu li a {
+    position: relative; overflow: hidden;
+    height: 30px; top: 7px;
+    z-index: 7;
+    float: left; display: block;
+    margin: auto 10px;
+    
+    text-decoration: none;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    font: bold 14px arial;
+    color: #fff; outline: none;
+    text-align: center;
+}

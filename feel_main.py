@@ -5,9 +5,9 @@ from handlers.data.senders.feel_populate import PopulateHandler
 from handlers.data.senders.feel_eda import EDASendHandler
 
 from handlers.ui.feel_home import HomeHandler
-from handlers.ui.feel_login import LoginHandler
-from handlers.ui.feel_logout import LogoutHandler
-from handlers.ui.feel_reg import RegHandler
+from handlers.utils.feel_login import LoginHandler
+from handlers.utils.feel_logout import LogoutHandler
+from handlers.utils.feel_reg import RegHandler
 
 import tornado.ioloop
 import tornado.web

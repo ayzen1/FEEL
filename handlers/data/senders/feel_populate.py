@@ -5,7 +5,6 @@ class PopulateHandler(BaseHandler):
     
     def get(self):
         if self.is_user_logged_in():
-            print self.request
             page = self.request.arguments['page'][0]
             limit = self.request.arguments['rows'][0]
             sord = self.request.arguments['sord'][0]

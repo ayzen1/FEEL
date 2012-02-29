@@ -11,6 +11,10 @@ time_params = ['sentAt','viewStart','viewEnd','reminder','startTime','endTime']
 type_to_params = {1:email_params, 3:phone_call_params, 2:calendar_params}
 type_to_tables = {1:'feel_email', 3:'feel_phone_call', 2:'feel_calendar'}
 
+encrypt_params = ['from','subject','text', 'recipients_to','recipients_cc',
+                  'contactName','phoneNumber',
+                  'title', 'attendees','location']
+
 incoming_time_format = "%Y-%b-%d %H:%M:%S"
 server_time_format = "%Y-%m-%d %H:%M:%S"
 
@@ -43,10 +47,15 @@ def save_event(user_id, args, event_type):
     fields_string = " (user_id,"
     values_string = '('+str(user_id) + ','
     for param in args.keys():
+        val = args[param]
         if (param in time_params):
-                time_object = datetime.datetime.strptime(args[param], incoming_time_format)
-                args[param] = time_object.strftime(server_time_format) 
-        values_string = values_string + "\'"+args[param]+"\',"
+                time_object = datetime.datetime.strptime(val, incoming_time_format)
+                val = time_object.strftime(server_time_format) 
+                
+        if param in encrypt_params:
+            pub_key = user_id
+            val = encrypt(val)
+        values_string = values_string + "\'"+val+"\',"
         fields_string = fields_string + params_map[param]+","
           
     fields_string = fields_string[0:len(fields_string)-1] + ") "
