@@ -17,7 +17,7 @@ class PopulateHandler(BaseHandler):
             data = get_basic_grid_data(user_id, int(page), int(limit), sidx, sord)
             print "sending data: " +str(data)
             if(data!= None):
-                self.write(data) #sending dict() ContentType is automatically json/application 
+                self.write(data) #sending dict(); so, ContentType is automatically json/application 
         else:
             self.redirect('/login')
     def post(self):

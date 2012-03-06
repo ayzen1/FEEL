@@ -3,15 +3,19 @@ html, body {
 	margin:0px;	/* make sure no space b/w nav block and window*/
 	padding:0px;
 }
-div#nav-block{
+div#nav-block-div-mid{
 	padding:0px; margin:0px;
+	background: url("/static/img/bg2.gif");
+    background-repeat:repeat-x repeat-y;
 }
 ul#menu {
 	list-style: none;
-    width: 100%;
-    background: url("/static/img/bg1.gif");
-    background-repeat:repeat-x repeat-y;
-    padding: 3px; margin:0px;
+	margin: 0 auto;
+	position:relative;
+	
+    width: 40%;
+    
+    padding: 3px;
     overflow: hidden;
 }
 
@@ -20,16 +24,14 @@ ul#menu li {
 	position: relative; /*allows us to set the z-index */
 	float:right;
 	z-index:5;
-	font-size:16px;
-    font-weight:bold;	
 }
 
 /* Represents the background of the highlighted menu-item. */
 ul#menu li.backLava {
 	position: absolute;
 	z-index:3;
-    background: url("/static/img/lava1.gif") top left;
-    background-repeat:repeat-x;    
+       background: url("/static/img/lava1.gif") top left;
+    background-repeat:repeat-x;  
     
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; 
@@ -40,7 +42,7 @@ ul#menu li.backLava {
 /* Styles for each menu-item. */
 ul#menu li a {
     position: relative; overflow: hidden;
-    height: 30px; top: 7px;
+    height: 40px; top: 12px; bottom:4px;
     z-index: 7;
     float: left; display: block;
     margin: auto 10px;
@@ -48,7 +50,7 @@ ul#menu li a {
     text-decoration: none;
     letter-spacing: 0;
     text-transform: uppercase;
-    font: bold 14px arial;
+    font: bold 11px arial;
     color: #fff; outline: none;
     text-align: center;
 }

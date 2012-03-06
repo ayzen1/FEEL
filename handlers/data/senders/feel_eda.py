@@ -8,16 +8,31 @@ class EDASendHandler(BaseHandler):
         try:    # requesting data with start/end time args
             start_time = self.request.arguments['startTime'][0]
             end_time = self.request.arguments['endTime'][0]
-            #read_type = self.request.arguments['type'][0]
+            try:
+                read_type = self.request.arguments['type'][0]
+            except KeyError:
+                read_type = 'eda'
             side = self.request.arguments['side'][0]
-            data = get_eda_data(user_id, start_time, end_time, 'eda', side)
+            # client time format here
+            # convert start_time, end_time to datetime objects using client_time_format
+            data = get_eda_data(user_id, start_time, end_time, read_type, side)
         except KeyError: # requesting data for an event
             event_id = self.request.arguments['event_id'][0]
             event_type = self.request.arguments['event_type'][0]
             #side = self.request.arguments['side'][0]
-            data = get_eda_data_for_event(user_id,  event_type, int(event_id), 'eda')
+            try:
+                read_type = self.request.arguments['type'][0]
+            except KeyError:
+                read_type = 'eda'
             
-        if data: # for now, we always return data, if none exists just 0s
+            try:
+                hand_side = self.request.arguments['side'][0]
+            except KeyError:
+                hand_side = 'RIGHT'
+                
+            data = get_eda_data_for_event(user_id,  event_type, int(event_id), read_type, hand_side)  
+        if data is not None: # for now, we always return data, if none exists just 0s
+            #print "sending data: "+str(data)
             self.write(data)
         else:
             self.write("No EDA data found")

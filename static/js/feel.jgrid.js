@@ -8,8 +8,8 @@ $(document).ready(
 		colNames:['Type','Time', 'Memo', 'Event ID',],
 		colModel :[ 
 		  {name:'event_type', index:'event_type', align:'center', width:80, fixed:'true'}, 
-		  {name:'event_time', index:'event_time', align:'center', width:150, fixed:'true'}, 
-		  {name:'event_memo', index:'event_memo', align:'left', width:500, sortable:'false'},
+		  {name:'event_time', index:'event_time', align:'center', width:230, fixed:'true', formatter:timeFormatter}, 
+		  {name:'event_memo', index:'event_memo', align:'left', width:400, sortable:'false'},
 		  {name:'event_id', hidden:'true', sortable:'false'},
 		],
 		jsonReader: {
@@ -17,6 +17,7 @@ $(document).ready(
 		},
 		onSelectRow: function(id){
 			var event_type = $("#events-grid").getRowData(id).event_type;
+			var event_time = $("#events-grid").getRowData(id).event_time;
 			var event_id = $("#events-grid").getRowData(id).event_id;
 			$.ajax({
 				url:'/eda_get', 
@@ -24,8 +25,7 @@ $(document).ready(
 				dataType: 'json', 
 				data:{'event_type':event_type, 'event_id':event_id},
 				success: function(data, textStatus, jqXHR){
-					test = data.eda;
-					newChart();
+					newChart( event_time, event_time, data, 'eda');
 				} 
 				});
 		},
@@ -36,7 +36,13 @@ $(document).ready(
 		sortorder: 'desc',
 		viewrecords: true,
 		gridview: true,
-		caption: 'My first grid'
 	  }); 
 
 });
+function timeFormatter(cellvalue, options, rowObject){
+	var ms = Date.parse(cellvalue);
+	var d = new Date(0);
+	d.setUTCSeconds(ms/1000);
+	return d.toLocaleDateString() +" "+ d.toLocaleTimeString();
+	
+}
