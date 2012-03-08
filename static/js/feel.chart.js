@@ -1,8 +1,7 @@
 var chart;
 
-function newChart(start_time, end_time, incoming_data){
+function newChart(start_time, incoming_data){
 	var startTime = Date.parse(start_time);
-	window.incoming_data = incoming_data;
 	chart = new Highcharts.StockChart({
 	    chart: {
 	       renderTo: 'eda-graph-div',

@@ -17,6 +17,8 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="static/css/ui.jqgrid.css" />
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/feel_nav.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/css/feel_home.css"/>
+	
 	<script>
 		function getData(start_time, end_time){
 			$.ajax({
@@ -34,9 +36,41 @@
 		$(document).ready(function(){
 				$("ul#menu").lavaLamp({ startItem:3, autoResize:true});
 				//$("ul#nav").lavaLamp({ startItem:0, autoResize:true});
-				$("#feedback-div").raty({ start:3, size:30, number:7, path:'static/img'});
+				$("#user-feedback").raty({ start:3, size:30, number:7, path:'static/img'});
+				$("#feedback-close").click(function(){ closeFeedbackDiv();}); 
 			
 			});
+	</script>
+	<script>
+		var feedbackPopup = false;
+		
+		
+		function loadFeedbackDiv(){
+			if(!feedbackPopup){
+				centerFeedbackDiv();
+				$("#mask").css({"opacity":".9"});
+				$("#mask").fadeIn("slow");
+				$("#feedback-div").fadeIn("slow");
+				feedbackPopup = true;
+			}
+		}
+		
+		function closeFeedbackDiv(){
+			if(feedbackPopup){
+				$("#mask").fadeOut("slow");
+				$("#feedback-div").fadeOut("slow");
+				feedbackPopup = false;
+			}
+		}
+		
+		function centerFeedbackDiv(){
+			var w = document.documentElement.clientWidth;
+			var h = document.documentElement.clientHeight;
+			var f_w = $("#feedback-div").width();
+			var f_h = $("#feedback-div").height();
+			$("#feedback-div").css({"position":"absolute", "top":h/2-f_h/2, "left":w/2-f_w/2});
+			
+		}
 	</script>
 </head>
 <body>
@@ -66,7 +100,16 @@
 		</div>
 		
 		<div>
-			<div id="feedback-div"/> 
+			<div id="feedback-div">
+				<div id="feedback-top">
+					<p id="feedback-div-title">Event Feedback</p>
+					<div id="feedback-close"></div>					
+				</div>
+				<div id="event-info">
+				</div>
+				<div id="user-feedback">
+				</div>
+			</div> 
 		</div>
 		
 		<div>
@@ -82,5 +125,6 @@
 	    </form>
 	    
 	</div>
+	<div id="mask"></div>
 </body>
 </html>

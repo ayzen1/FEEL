@@ -3,7 +3,7 @@ from feel_data_receiver_util import handle_event
 
 # Use this handler to deal with phone events.
 
-class EventHandler(BaseHandler):
+class EventReceiveHandler(BaseHandler):
     
     def get(self):
         phone_number = self.request.arguments['userphone'][0]

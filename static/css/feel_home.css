@@ -1,0 +1,30 @@
+#feedback-div {
+	display:none;
+	position:fixed;
+	_position:absolute; /*for IE6*/
+	height:400px;
+	width:300px;
+	background:#FFFFFF; 
+	border-radius: 20px;
+	z-index: 20; /*make sure bigger than chart-grid z-indices*/
+}
+#mask {
+	display:none;
+	position:fixed;
+	height:100%;
+	width:100%;
+	background:#000000;
+	top:0;
+	left:0;
+	z-index:19;
+}
+#feedback-close{
+	width:35px;
+	height:35px;
+	position:absolute;
+	right: 1px;
+	top: 1px;
+	background:url("/static/img/close.png");
+	background-repeat:no-repeat;
+}
+

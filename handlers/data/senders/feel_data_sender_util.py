@@ -9,6 +9,9 @@ user2db_event_types = {'Email':1, 'Calendar':2, 'Phone Call':3}
 #2012-03-02T18:35Z
 iso8601_format = "%Y-%m-%dT%H:%M:%SZ"
 server_time_format = "%Y-%m-%d %H:%M:%S"
+
+def get_event_data(user_id, event_type, event_id):
+    pass
 def get_basic_grid_data(user_id, page, limit, sidx, sord):
     
     query = "SELECT COUNT(*) FROM feel_event_summary WHERE user_id='{}'".format(user_id)
@@ -53,7 +56,7 @@ def get_basic_grid_data(user_id, page, limit, sidx, sord):
 
 # Returns the requested datatype for the event from start time of the event till
 # 10 min after its end.        
-def get_eda_data_for_event(user_id, event_type, event_id, read_type, hand_side):     
+def get_eda_data_for_event(user_id, event_type, event_id, hand_side):     
     event_type =  user2db_event_types[event_type]
     table = type_to_tables[event_type]  
     if event_type == 2 or event_type == 3:
@@ -73,7 +76,7 @@ def get_eda_data_for_event(user_id, event_type, event_id, read_type, hand_side):
 # Takes start_time, end_time datetime objects
 # Currently sending all reading types
 
-def get_eda_data(user_id, start_time, end_time, read_type, hand_side = 'RIGHT'):
+def get_eda_data(user_id, start_time, end_time, hand_side = 'RIGHT'):
     start = start_time.strftime(server_time_format)
     end = end_time.strftime(server_time_format)
     

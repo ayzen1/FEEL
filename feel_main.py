@@ -1,6 +1,8 @@
 from handlers.data.receivers.feel_eda import EDAReceiveHandler
-from handlers.data.receivers.feel_event import EventHandler
+from handlers.data.receivers.feel_event import EventReceiveHandler
 
+
+from handlers.data.senders.feel_event import EventSendHandler
 from handlers.data.senders.feel_populate import PopulateHandler
 from handlers.data.senders.feel_eda import EDASendHandler
 
@@ -25,7 +27,8 @@ application = tornado.web.Application([
     (r"/logout",LogoutHandler),
     (r"/eda_post", EDAReceiveHandler),
     (r"/eda_get", EDASendHandler),
-    (r"/event/", EventHandler),
+    (r"/event_post", EventReceiveHandler),
+    (r"/event_get", EventSendHandler)
     (r"/populate", PopulateHandler),
 ], **settings )
 

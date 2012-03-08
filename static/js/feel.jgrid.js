@@ -1,3 +1,5 @@
+var selectedRow = null;
+
 $(document).ready(
 	function(){ 
 	  $("#events-grid").jqGrid({
@@ -16,17 +18,46 @@ $(document).ready(
 			root: "events",    	
 		},
 		onSelectRow: function(id){
+			selectedRow = $("#events-grid").getRowData(id);
+			
 			var event_type = $("#events-grid").getRowData(id).event_type;
 			var event_time = $("#events-grid").getRowData(id).event_time;
 			var event_id = $("#events-grid").getRowData(id).event_id;
+			
+			// make ajax request to server if popup should be displayed
+			centerFeedbackDiv();
+			loadFeedbackDiv();
+			$.ajax({url:'/feedback', 
+					type:'GET',
+					dataType: 'json', 
+					data:{'type':'should_popup','event_type':event_type, 'event_id':event_id},
+					success: function(data, textStatus, jqXHR){
+							// if response is positive use popup window to get feedback
+							if(data.response == "yes"){
+								loadFeedbackDiv();
+								// request event details
+						
+								$.ajax({
+									url:'/event_get', 
+									type:'GET',
+									dataType: 'json', 
+									data:{'event_type':event_type, 'event_id':event_id},
+									success: function(data, textStatus, jqXHR){
+										 // loadEventIntoFeedback(data);
+										} 
+									});
+							}
+					} 
+				});
+			
 			$.ajax({
 				url:'/eda_get', 
 				type:'GET',
 				dataType: 'json', 
 				data:{'event_type':event_type, 'event_id':event_id},
 				success: function(data, textStatus, jqXHR){
-					newChart( event_time, event_time, data, 'eda');
-				} 
+					newChart(event_time, data);
+					} 
 				});
 		},
 		pager: '#pager',
@@ -45,4 +76,7 @@ function timeFormatter(cellvalue, options, rowObject){
 	d.setUTCSeconds(ms/1000);
 	return d.toLocaleDateString() +" "+ d.toLocaleTimeString();
 	
+}
+
+
 }
