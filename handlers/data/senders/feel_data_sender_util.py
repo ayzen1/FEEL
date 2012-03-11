@@ -70,7 +70,7 @@ def get_eda_data_for_event(user_id, event_type, event_id, hand_side):
         result = FB.cursor.fetchone()
         start_time = result[0]
         end_time = (result[1] +datetime.timedelta(minutes=10))
-        return get_eda_data(user_id, start_time, end_time, read_type, hand_side)
+        return get_eda_data(user_id, start_time, end_time, hand_side)
     return None
 
 # Takes start_time, end_time datetime objects

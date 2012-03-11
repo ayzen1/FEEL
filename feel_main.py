@@ -1,6 +1,6 @@
 from handlers.data.receivers.feel_eda import EDAReceiveHandler
 from handlers.data.receivers.feel_event import EventReceiveHandler
-from handlers.data.receivers.feel_event_rating import EventRatingHandler
+from handlers.data.receivers.feel_event_feedback import EventFeedbackHandler
 
 from handlers.data.senders.feel_event import EventSendHandler
 from handlers.data.senders.feel_populate import PopulateHandler
@@ -30,7 +30,7 @@ application = tornado.web.Application([
     (r"/event_post", EventReceiveHandler),
     (r"/event_get", EventSendHandler),
     (r"/populate", PopulateHandler),
-    (r"/rate", EventRatingHandler),
+    (r"/feedback", EventFeedbackHandler),
 ], **settings )
 
 

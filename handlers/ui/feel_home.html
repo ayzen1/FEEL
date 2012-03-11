@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
 <head>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="static/js/i18n/grid.locale-en.js" type="text/javascript"></script>
@@ -34,42 +34,70 @@
 	</script>
 	<script>
 		$(document).ready(function(){
-				$("ul#menu").lavaLamp({ startItem:3, autoResize:true});
+				$("ul#menu").lavaLamp({ autoResize:true});
+				$("li#upload-eda").click( function(event){
+						centerPopupDiv("#eda-upload-div");
+						loadPopupDiv("#eda-upload-div");		
+				});
+				$("#eda-upload-close").click(function(){	
+						closePopupDiv('#eda-upload-div');
+				});
+				$("#feedback-close").click(function(){	
+						closePopupDiv('#feedback-div');
+				});					
+				$("#rating-submit-button").click(function(){ 
+						sendRatings();
+						closePopupDiv('#feedback-div');
+				});
 				//$("ul#nav").lavaLamp({ startItem:0, autoResize:true});
-				$("#user-feedback").raty({ start:3, size:30, number:7, path:'static/img'});
-				$("#feedback-close").click(function(){ closeFeedbackDiv();}); 
-			
-			});
+				$("#rating-stress").raty({ start:0, size:30, number:7, path:'static/img'});
+				$("#rating-recall").raty({ start:0, size:30, number:7, path:'static/img'});
+		});
+				
 	</script>
 	<script>
-		var feedbackPopup = false;
+		var popup = false;
 		
-		
-		function loadFeedbackDiv(){
-			if(!feedbackPopup){
-				centerFeedbackDiv();
+		function loadPopupDiv(id){
+			if(!popup){
+				centerPopupDiv(id);
 				$("#mask").css({"opacity":".9"});
 				$("#mask").fadeIn("slow");
-				$("#feedback-div").fadeIn("slow");
-				feedbackPopup = true;
+				$(id).fadeIn("slow");
+				popup = true;
 			}
 		}
 		
-		function closeFeedbackDiv(){
-			if(feedbackPopup){
+		function closePopupDiv(id){
+			if(popup){
 				$("#mask").fadeOut("slow");
-				$("#feedback-div").fadeOut("slow");
-				feedbackPopup = false;
+				$(id).fadeOut("slow");
+				popup = false;
 			}
 		}
 		
-		function centerFeedbackDiv(){
+		function centerPopupDiv(id){
 			var w = document.documentElement.clientWidth;
 			var h = document.documentElement.clientHeight;
-			var f_w = $("#feedback-div").width();
-			var f_h = $("#feedback-div").height();
-			$("#feedback-div").css({"position":"absolute", "top":h/2-f_h/2, "left":w/2-f_w/2});
+			var f_w = $(id).width();
+			var f_h = $(id).height();
+			$(id).css({"position":"absolute", "top":h/2-f_h/2, "left":w/2-f_w/2});
 			
+		}
+		
+		function sendRatings(){
+			var stress = $('#rating-stress').raty('score');
+			var recall = $('#rating-recall').raty('score');
+			$.ajax({
+					url:'/feedback',
+					type: 'GET',
+					data:{
+						'type': 'user_response',
+						'stress': stress, 
+						'recall' : recall,
+						'event_id': selectedRow.event_id, 
+						'event_type': selectedRow.event_type }
+				});	
 		}
 	</script>
 </head>
@@ -80,7 +108,7 @@
 			<ul id="menu">
 				<li><a href="/settings">Settings</a></li>
 				<li><a href="/admin">Admin</a></li>
-				<li><a href="#eda-upload">Upload EDA File</a></li>
+				<li id="upload-eda"><a href="#">Upload EDA File</a></li>
 			    <li><a href="#">Home</a></li>		        
 	        </ul>
 	    </div>
@@ -103,28 +131,33 @@
 			<div id="feedback-div">
 				<div id="feedback-top">
 					<p id="feedback-div-title">Event Feedback</p>
-					<div id="feedback-close"></div>					
+					<div id="feedback-close" class="popup-close"></div>					
 				</div>
 				<div id="event-info">
 				</div>
 				<div id="user-feedback">
+					<div id= "rating-stress"/>
+					<div id= "rating-recall"/>
+					<div id = "rating-submit">
+						<input type="submit" id="rating-submit-button"/>
+					</div>
 				</div>
 			</div> 
 		</div>
-		
-		<div>
+	</div>
+	
+	<div>
 			<div id="eda-graph-div"/>
-		</div>
 	</div>
 
-	<div id="eda-upload">
-	
-	    <form action="/eda" enctype="multipart/form-data" method="post">
-	    	<input type="file" name="eda">
-	        <input type="submit" value="Upload"> 
-	    </form>
-	    
+	<div id="eda-upload-div">
+		<div id="eda-upload-close" class="popup-close"></div>	
+	    <form action="/eda_post" enctype="multipart/form-data" method="post">
+	    	<input type="file" name="eda"/>
+	        <input type="submit" value="Upload"/> 
+	    </form>	    
 	</div>
+	
 	<div id="mask"></div>
 </body>
 </html>

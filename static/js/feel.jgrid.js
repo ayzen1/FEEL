@@ -1,5 +1,4 @@
-var selectedRow = null;
-
+var selectedRow = null; // global variable
 $(document).ready(
 	function(){ 
 	  $("#events-grid").jqGrid({
@@ -24,9 +23,7 @@ $(document).ready(
 			var event_time = $("#events-grid").getRowData(id).event_time;
 			var event_id = $("#events-grid").getRowData(id).event_id;
 			
-			// make ajax request to server if popup should be displayed
-			centerFeedbackDiv();
-			loadFeedbackDiv();
+			// make ajax request to server if popup should be displayed			
 			$.ajax({url:'/feedback', 
 					type:'GET',
 					dataType: 'json', 
@@ -34,7 +31,8 @@ $(document).ready(
 					success: function(data, textStatus, jqXHR){
 							// if response is positive use popup window to get feedback
 							if(data.response == "yes"){
-								loadFeedbackDiv();
+								centerPopupDiv('#feedback-div');
+								loadPopupDiv('#feedback-div');
 								// request event details
 						
 								$.ajax({
@@ -76,7 +74,4 @@ function timeFormatter(cellvalue, options, rowObject){
 	d.setUTCSeconds(ms/1000);
 	return d.toLocaleDateString() +" "+ d.toLocaleTimeString();
 	
-}
-
-
 }

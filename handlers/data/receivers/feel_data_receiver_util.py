@@ -96,17 +96,23 @@ def save_event_summary(user_id, event_type, table, args):
     return FB.safe_execute(summary_query)
    
 # receives a dictionary of user ratings     
-def save_event_rating(event_id, event_type, rating_dict):   
+def save_event_rating(event_type, event_id, rating_dict):   
     stress= rating_dict['stress']
     recall = rating_dict['recall']
+    if stress == 'null':
+        stress = 0
+    if recall == 'null':
+        recall = 0
     query = """UPDATE feel_event_summary SET stress_rating ={0}, recall_rating={1}
                 WHERE event_id={2} AND event_type={3}""".format(int(stress), int(recall), event_id, event_type)
     
     return FB.safe_execute(query)
     
-    
+def is_asking_feedback(event_type, event_id):    
+    return True
 
-def save_eda_file_in_slices(user_id, file_name):
+def save_eda_file_in_slices(user_id, hand_side, file_name):
+
     eda_file = qLogFile(file_name)
     slice_start_time = eda_file.startTime #datetime.datetime object
     end_time = eda_file.endTime
@@ -121,20 +127,20 @@ def save_eda_file_in_slices(user_id, file_name):
         acc_y = ",".join(str(x) for x in slice[3])
         acc_z = ",".join(str(x) for x in slice[4])
                 
-        save_eda_data(user_id, slice_start_time, slice_end_time, sample_rate, eda, temperature, acc_x, acc_y, acc_z)
+        save_eda_data(user_id, slice_start_time, slice_end_time, sample_rate, eda, hand_side, temperature, acc_x, acc_y, acc_z)
         
         slice_start_time = slice_start_time + SLICE_LENGTH
  
 # takes datetime objects for start_time and end_time           
-def save_eda_data(user_id, start_time, end_time, sample_rate, eda, temperature, acc_x, acc_y, acc_z):
+def save_eda_data(user_id, start_time, end_time, sample_rate, eda, hand_side, temperature, acc_x, acc_y, acc_z):
     import pytz
     
     start_time_string = start_time.astimezone(pytz.utc).strftime(server_time_format)
     end_time_string = end_time.astimezone(pytz.utc).strftime(server_time_format)
     
-    query = """INSERT IGNORE INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `eda`,
+    query = """INSERT IGNORE INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `eda`,`hand_side`,
          `temperature`, `acc_x`, `acc_y`, `acc_z`) VALUES ('{0}','{1}','{2}','{3}',
-         '{4}','{5}','{6}','{7}','{8}')""".format(user_id, start_time_string,
-                                                   end_time_string, sample_rate, eda,
+         '{4}','{5}','{6}','{7}','{8}', '{9}')""".format(user_id, start_time_string,
+                                                   end_time_string, sample_rate, eda, hand_side,
                                                     temperature, acc_x, acc_y, acc_z)
     return FB.safe_execute(query)
