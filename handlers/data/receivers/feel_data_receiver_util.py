@@ -69,35 +69,43 @@ def save_event(user_id, args, event_type):
         print "could not save event summary"
         return False
     
-    
+# this is called right after all the event data is saved in appropriate table    
 def save_event_summary(user_id, event_type, table, args):  
-        fetch_id_query = "SELECT LAST_INSERT_ID()"
-        if(FB.safe_execute(fetch_id_query)):
+    fetch_id_query = "SELECT LAST_INSERT_ID()"
+    if(FB.safe_execute(fetch_id_query)):
+        result = FB.cursor.fetchone()
+        event_id = result[0]
+        fetch_query = "SELECT * FROM "+table+" WHERE id={0}".format(event_id)
+        if(FB.safe_execute(fetch_query)):
             result = FB.cursor.fetchone()
             event_id = result[0]
-            fetch_query = "SELECT * FROM "+table+" WHERE id={0}".format(event_id)
-            if(FB.safe_execute(fetch_query)):
-                result = FB.cursor.fetchone()
-                event_id = result[0]
-          
-        if event_type == 1:
-            event_time = args['viewStart']
-            memo = args['from']+" - "+args['subject'] 
-        elif event_type == 3:
-            event_time = args['startTime']
-            memo = args['phoneNumber']            
-        elif event_type == 2:
-            event_time = args['startTime']
-            memo = args['title']          
-        
-        summary_query = """INSERT IGNORE INTO feel_event_summary (event_id, user_id, 
-                event_type, event_time, memo) VALUES 
-                ({0},{1},{2},'{3}','{4}')""".format(event_id, user_id, event_type, event_time, memo)
-        return FB.safe_execute(summary_query)
-        
+      
+    if event_type == 1:
+        event_time = args['viewStart']
+        memo = args['from']+" - "+args['subject'] 
+    elif event_type == 3:
+        event_time = args['startTime']
+        memo = args['phoneNumber']            
+    elif event_type == 2:
+        event_time = args['startTime']
+        memo = args['title']          
+    
+    summary_query = """INSERT IGNORE INTO feel_event_summary (event_id, user_id, 
+            event_type, event_time, memo) VALUES 
+            ({0},{1},{2},'{3}','{4}')""".format(event_id, user_id, event_type, event_time, memo)
+    return FB.safe_execute(summary_query)
    
+# receives a dictionary of user ratings     
+def save_event_rating(event_id, event_type, rating_dict):   
+    stress= rating_dict['stress']
+    recall = rating_dict['recall']
+    query = """UPDATE feel_event_summary SET stress_rating ={0}, recall_rating={1}
+                WHERE event_id={2} AND event_type={3}""".format(int(stress), int(recall), event_id, event_type)
+    
+    return FB.safe_execute(query)
+    
+    
 
-#TODO: save eda in UTC time
 def save_eda_file_in_slices(user_id, file_name):
     eda_file = qLogFile(file_name)
     slice_start_time = eda_file.startTime #datetime.datetime object
