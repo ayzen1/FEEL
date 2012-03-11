@@ -21,8 +21,7 @@ class EDASendHandler(BaseHandler):
                 side = 'RIGHT'
             data = get_eda_data_for_event(user_id,  event_type, int(event_id), side)  
             
-        if data is not None: # for now, we always return data, if none exists just 0s
-            #print "sending data: "+str(data)
+        if data is not None: # for now, always returning data
             self.write(data)
         else:
             self.write("No EDA data found")

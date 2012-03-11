@@ -28,7 +28,7 @@ application = tornado.web.Application([
     (r"/eda_post", EDAReceiveHandler),
     (r"/eda_get", EDASendHandler),
     (r"/event_post", EventReceiveHandler),
-    (r"/event_get", EventSendHandler)
+    (r"/event_get", EventSendHandler),
     (r"/populate", PopulateHandler),
 ], **settings )
 

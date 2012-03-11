@@ -112,22 +112,21 @@ def save_eda_file_in_slices(user_id, file_name):
         acc_x = ",".join(str(x) for x in slice[2])
         acc_y = ",".join(str(x) for x in slice[3])
         acc_z = ",".join(str(x) for x in slice[4])
-        
-        start_time_string = slice_start_time.strftime("%Y-%m-%d %H:%M:%S")
-        end_time_string = slice_end_time.strftime("%Y-%m-%d %H:%M:%S")
-        
-        timezone = slice_start_time.strftime("%z")
-        
-        save_eda_data(user_id, start_time_string, end_time_string, sample_rate, timezone, eda, temperature, acc_x, acc_y, acc_z)
+                
+        save_eda_data(user_id, slice_start_time, slice_end_time, sample_rate, eda, temperature, acc_x, acc_y, acc_z)
         
         slice_start_time = slice_start_time + SLICE_LENGTH
-            
-def save_eda_data(user_id, start_time_string, end_time_string, sample_rate,
-                   time_zone, eda, temperature, acc_x, acc_y, acc_z):
+ 
+# takes datetime objects for start_time and end_time           
+def save_eda_data(user_id, start_time, end_time, sample_rate, eda, temperature, acc_x, acc_y, acc_z):
+    import pytz
     
-    query = """INSERT IGNORE INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `time_zone`, `eda`,
+    start_time_string = start_time.astimezone(pytz.utc).strftime(server_time_format)
+    end_time_string = end_time.astimezone(pytz.utc).strftime(server_time_format)
+    
+    query = """INSERT IGNORE INTO feel_eda (`user_id`, `start_time`, `end_time`, `sampling_rate`, `eda`,
          `temperature`, `acc_x`, `acc_y`, `acc_z`) VALUES ('{0}','{1}','{2}','{3}',
-         '{4}','{5}','{6}','{7}','{8}','{9}')""".format(user_id, start_time_string,
-                                                   end_time_string, sample_rate, time_zone, eda,
+         '{4}','{5}','{6}','{7}','{8}')""".format(user_id, start_time_string,
+                                                   end_time_string, sample_rate, eda,
                                                     temperature, acc_x, acc_y, acc_z)
     return FB.safe_execute(query)
